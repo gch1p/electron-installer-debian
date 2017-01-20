@@ -177,7 +177,9 @@ var getDefaults = function (data, callback) {
 
       mimeType: [],
 
-      lintianOverrides: []
+      lintianOverrides: [],
+
+      custom: null
     }
 
     callback(err, defaults)
@@ -373,15 +375,20 @@ var createDir = function (options, callback) {
 var createContents = function (options, dir, callback) {
   options.logger('Creating contents of package')
 
-  async.parallel([
+  let functions = [
     async.apply(createControl, options, dir),
     async.apply(createBinary, options, dir),
     async.apply(createDesktop, options, dir),
     async.apply(createIcon, options, dir),
     async.apply(createCopyright, options, dir),
     async.apply(createOverrides, options, dir),
-    async.apply(createApplication, options, dir)
-  ], function (err) {
+    async.apply(createApplication, options, dir),
+  ]
+  if (options.custom) {
+    functions.push(async.apply(options.custom, options, dir))
+  }
+
+  async.parallel(functions, function (err) {
     callback(err, dir)
   })
 }
