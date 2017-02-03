@@ -127,7 +127,7 @@ var getDefaults = function (data, callback) {
       size: Math.ceil(size / 1024),
 
       depends: [
-        'git',
+        //'git',
         'gconf2',
         'gconf-service',
         'gvfs-bin',
